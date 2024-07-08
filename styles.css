@@ -25,3 +25,21 @@ h2 {
     text-align: center;
     font-size: 2em;
 }
+
+textarea {
+    resize: none;
+    font-size: 2em;
+    text-align: center;
+}
+
+.label {
+    font-size: 2em;
+}
+
+.error {
+    color: red;
+}
+
+#error-message {
+    text-align: center;
+}

@@ -40,6 +40,39 @@ app.get('/query/students', async (req, res) => {
     }
 });
 
+app.post('/query/users', async (req, res) => {
+    const {username, password} = req.body;
+    let connection;
+    try {
+        connection = await oracledb.getConnection({
+            user: 'system',
+            password: 'admin',
+            connectString: 'localhost/XE'
+        });
+
+        const result = await connection.execute(`SELECT * FROM userpass WHERE username = :username AND userpass = :password`,
+            [username, password]
+        );
+
+        if (result.rows.length > 0) {
+            res.status(200).send('Success');
+        } else {
+            res.status(404).send('Wrong Credentials');
+        }
+    } catch (err) {
+        res.status(500).send('An error occurred. Please try again later.');
+        console.error(err);
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
+});
+
 
 app.listen(3000, () => {
     console.log('Server running on http://localhost:3000');
