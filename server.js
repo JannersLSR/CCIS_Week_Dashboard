@@ -5,11 +5,12 @@ const bodyParser = require('body-parser');
 const app = express();
 
 app.use(bodyParser.json());
+
 app.use(cors({
-    origin: 'http://XXX.XXX.XX.XXX:5500' /*Change this to your local IP address*/
+    origin: 'http://127.0.0.1:3000' /*Change this to your local IP address*/
 }));
 
-app.get('/select/eventname', async (req, res) => {
+app.get('/query/students', async (req, res) => {
     let connection;
     try {
         connection = await oracledb.getConnection({
@@ -18,7 +19,7 @@ app.get('/select/eventname', async (req, res) => {
             connectString: 'localhost/XE'
         });
 
-        const result = await connection.execute(`SELECT EventName FROM EventInfo`);
+        const result = await connection.execute(`SELECT studLName FROM Students`);
 
         if (result.rows.length > 0) {
             res.status(200).json(result.rows.map(row => row[0]));
