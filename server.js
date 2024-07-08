@@ -1,7 +1,13 @@
-const express = require('express')
-const oracledb = require('oracledb')
-const app = express()
-const port = 3000
+const express = require('express');
+const oracledb = require('oracledb');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const app = express();
+
+app.use(bodyParser.json());
+app.use(cors({
+    origin: 'http://XXX.XXX.XX.XXX:5500' /*Change this to your local IP address*/
+}));
 
 app.get('/select/eventname', async (req, res) => {
     let connection;
