@@ -43,3 +43,7 @@ textarea {
 #error-message {
     text-align: center;
 }
+
+.placeholder {
+    font-weight: bold;
+}

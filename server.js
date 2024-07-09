@@ -10,7 +10,10 @@ app.use(cors({
     origin: 'http://127.0.0.1:3000' /*Change this to your local IP address*/
 }));
 
-app.get('/query/students', async (req, res) => {
+
+// QUERY-UPDATE STUDENT
+app.post('/query/students', async (req, res) => {
+    const { studNumber } = req.body;
     let connection;
     try {
         connection = await oracledb.getConnection({
@@ -19,12 +22,20 @@ app.get('/query/students', async (req, res) => {
             connectString: 'localhost/XE'
         });
 
-        const result = await connection.execute(`SELECT studLName FROM Students`);
+        const result = await connection.execute(
+            `SELECT studfname, studlname, studhouse FROM Students WHERE studID = :studNum`,
+            [studNumber]
+        );
 
         if (result.rows.length > 0) {
-            res.status(200).json(result.rows.map(row => row[0]));
+            const studentData = {
+                firstName: result.rows[0][0],
+                lastName: result.rows[0][1],
+                house: result.rows[0][2]
+            };
+            res.status(200).json(studentData);
         } else {
-            res.status(404).json([]);
+            res.status(404).send('Student not found');
         }
     } catch (err) {
         res.status(500).send('An error occurred. Please try again later.');
@@ -40,6 +51,78 @@ app.get('/query/students', async (req, res) => {
     }
 });
 
+// UPDATE STUDENT
+app.post('/update/students', async (req, res) => {
+    const { studNum, studFName, studLName, studHouse } = req.body;
+    let connection;
+    try {
+        connection = await oracledb.getConnection({
+            user: 'system',
+            password: 'admin',
+            connectString: 'localhost/XE'
+        });
+
+        const result = await connection.execute(
+            `UPDATE Students SET studFName = :studFName, studLName = :studLName, studHouse = :studHouse WHERE studID = :studNum`,
+            { studNum, studFName, studLName, studHouse }
+        );
+
+        if (result.rowsAffected && result.rowsAffected === 1) {
+            res.status(200).send('Student updated successfully');
+        } else {
+            res.status(404).send('Student not found or update failed');
+        }
+    } catch (err) {
+        res.status(500).send('An error occurred. Please try again later.');
+        console.error(err);
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
+});
+
+// DELETE STUDENT
+app.delete('/delete/students', async (req, res) => {
+    const { studNum } = req.body;
+    let connection;
+    try {
+        connection = await oracledb.getConnection({
+            user: 'system',
+            password: 'admin',
+            connectString: 'localhost/XE'
+        });
+
+        const result = await connection.execute(
+            `DELETE FROM Students WHERE studID = :studNum`,
+            [studNum]
+        );
+
+        if (result.rowsAffected && result.rowsAffected === 1) {
+            res.status(200).send('Student deleted successfully');
+        } else {
+            res.status(404).send('Student not found or delete failed');
+        }
+    } catch (err) {
+        res.status(500).send('An error occurred. Please try again later.');
+        console.error(err);
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
+});
+
+
+// USER LOGIN
 app.post('/query/users', async (req, res) => {
     const {username, password} = req.body;
     let connection;
@@ -72,6 +155,7 @@ app.post('/query/users', async (req, res) => {
         }
     }
 });
+
 
 
 app.listen(3000, () => {
