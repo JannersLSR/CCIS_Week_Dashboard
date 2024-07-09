@@ -10,6 +10,8 @@ app.use(cors({
     origin: 'http://127.0.0.1:3000' /*Change this to your local IP address*/
 }));
 
+// CREATE STUDENT
+
 
 // QUERY-UPDATE STUDENT
 app.post('/query/students', async (req, res) => {

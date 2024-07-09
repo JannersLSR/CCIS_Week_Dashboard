@@ -47,3 +47,9 @@ textarea {
 .placeholder {
     font-weight: bold;
 }
+
+.stud-event {
+    font-size: 3em;
+    margin: 2em;
+    padding: 4em;
+}

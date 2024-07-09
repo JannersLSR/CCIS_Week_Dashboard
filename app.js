@@ -122,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (res.ok) {
                     window.location.href = 'index.html';
+
                 } else {
                     console.error('Failed to authenticate:', res.status);
                     displayErrorMessage('Incorrect Username or Password!', 'error-message');
