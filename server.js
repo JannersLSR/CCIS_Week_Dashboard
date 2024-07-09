@@ -53,7 +53,7 @@ app.post('/query/students', async (req, res) => {
 
 // UPDATE STUDENT
 app.post('/update/students', async (req, res) => {
-    const { studNum, studFName, studLName, studHouse } = req.body;
+    const { studFName, studLName, studHouse, studNum } = req.body;
     let connection;
     try {
         connection = await oracledb.getConnection({
@@ -64,7 +64,8 @@ app.post('/update/students', async (req, res) => {
 
         const result = await connection.execute(
             `UPDATE Students SET studFName = :studFName, studLName = :studLName, studHouse = :studHouse WHERE studID = :studNum`,
-            { studNum, studFName, studLName, studHouse }
+            { studFName, studLName, studHouse, studNum },
+            {autoCommit: true}
         );
 
         if (result.rowsAffected && result.rowsAffected === 1) {
@@ -99,7 +100,8 @@ app.delete('/delete/students', async (req, res) => {
 
         const result = await connection.execute(
             `DELETE FROM Students WHERE studID = :studNum`,
-            [studNum]
+            [studNum],
+            {autoCommit: true}
         );
 
         if (result.rowsAffected && result.rowsAffected === 1) {

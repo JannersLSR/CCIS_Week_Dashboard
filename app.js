@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ studNum, studFName, studLName, studHouse })
+                    body: JSON.stringify({ studFName, studLName, studHouse, studNum })
                 });
 
                 if (res.ok) {
@@ -62,8 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     displayErrorMessage('Failed to update student. Please try again.', 'error-message');
                 }
             } catch (error) {
-                console.error('Error updating student:', error);
-                displayErrorMessage('Error updating student. Please try again.', 'error-message');
+                //console.error('Error updating student:', error);
+                
             }
         });
     } else {
