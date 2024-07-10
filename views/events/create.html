@@ -104,13 +104,21 @@
 			  <div class="bg-background text-primary-foreground min-h-screen flex flex-col">
 			<header class="bg-primary p-4 flex justify-between items-center">
 			  <h1 class="text-xl font-bold">CCIS Week Admin Dashboard</h1>
-			  <button class="bg-secondary text-secondary-foreground px-3 py-1 rounded-lg" onclick="window.location.href = '../student.html';">Back</button>
+			  <button class="bg-secondary text-secondary-foreground px-3 py-1 rounded-lg" onclick="window.location.href = '../events.html';">Back</button>
 			</header>
 			<main class="flex-1 flex flex-col items-center justify-center">
-                <label class="label p-4 rounded-lg text-black text-center">Student Number:</label>
-                <input placeholder="ex. 2022153466" class="label p-4 rounded-lg text-black text-center" id="studNum"></input>
+                <label class="label rounded-lg text-black text-center">Event Number:</label>
+                <input placeholder="ex. 1" class="label p-4 rounded-lg text-black text-center" id="eventNum"></input>
+                <label class="label rounded-lg text-black text-center">Event Name:</label>
+                <input class="label p-4 rounded-lg text-black text-center" id="eventName"></input>
+                <label class="label rounded-lg text-black text-center">Event Start:</label>
+                <input placeholder="ex. 08:00" class="label p-4 rounded-lg text-black text-center" id="eventStart"></input>
+				<label class="label rounded-lg text-black text-center">Event End:</label>
+                <input placeholder="ex. 12:00" class="label p-4 rounded-lg text-black text-center" id="eventEnd"></input>
+                <label class="label rounded-lg text-black text-center">Event Day:</label>
+				<input placeholder="ex. Day-1" class="label p-4 rounded-lg text-black text-center" id="eventDate"></input>
                 <div id="error-message"></div>
-                <button class="buttons p-4 rounded-lg shadow hover:shadow-xl focus:outline-none transition-all duration-300 text-black text-center" id="delete-student">Delete</button>
+                <button class="buttons rounded-lg shadow hover:shadow-xl focus:outline-none transition-all duration-300 text-black text-center" id="create-event">Create</button>
 			</main>
 			<footer class="bg-primary p-4 text-primary-foreground text-center">
 			  <p>&copy; 2024 OMAD Inc. All rights reserved.</p>
