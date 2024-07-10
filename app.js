@@ -282,6 +282,59 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// QUERY ATTEDANCE
+document.addEventListener('DOMContentLoaded', () => {
+    const queryAttendanceButton = document.getElementById('query-attendance');
+    const eventNameDisplay = document.getElementById('q-ename');
+    const attendanceList = document.getElementById('att-list');
+
+    if (queryAttendanceButton) {
+        queryAttendanceButton.addEventListener('click', async function(event){
+            const eventNumber = document.getElementById('eventNum').value;
+
+            try {
+                const res = await fetch('http://localhost:3000/query/attendance', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ eventNum: eventNumber })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+
+                    if (data.attendanceFound) {
+
+                        clearErrorMessage();
+
+                        eventNameDisplay.textContent = `${data.eventName}`;
+
+                        attendanceList.innerHTML = '';
+
+                        data.studIDs.forEach(studID => {
+                            const listItem = document.createElement('li');
+                            listItem.textContent = `${studID}`;
+                            attendanceList.appendChild(listItem);
+                        });
+                    } else {
+                        displayErrorMessage('Attendance not found for Event Number.', 'error-message');
+                    }
+                } else {
+                    console.error('Failed to fetch event:', res.status);
+                    displayErrorMessage('Event Number not Found!', 'error-message');
+                }
+            } catch (error) {
+                console.error('Error fetching event:', error);
+                displayErrorMessage('Error fetching event. Please try again.', 'error-message' );
+            }
+        });
+    } else {
+        console.error('Currently not in correct page');
+    }
+});
+
+
 
 // LOGIN USER
 document.addEventListener('DOMContentLoaded', () => {

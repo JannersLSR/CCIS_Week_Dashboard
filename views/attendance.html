@@ -1,5 +1,5 @@
-<link rel="stylesheet" href="/styles.css">
-<script type="application/javascript" src="/app.js"></script>
+<link rel="stylesheet" href="../styles.css">
+
         
 
 		<html>
@@ -104,13 +104,12 @@
 			  <div class="bg-background text-primary-foreground min-h-screen flex flex-col">
 			<header class="bg-primary p-4 flex justify-between items-center">
 			  <h1 class="text-xl font-bold">CCIS Week Admin Dashboard</h1>
-			  <button class="bg-secondary text-secondary-foreground px-3 py-1 rounded-lg" onclick="window.location.href = '../events.html';">Back</button>
+			  <button class="bg-secondary text-secondary-foreground px-3 py-1 rounded-lg" onclick="window.location.href = '../index.html';">Back</button>
 			</header>
-			<main class="flex-1 flex flex-col items-center justify-center">
-                <label class="label p-4 rounded-lg text-black text-center">Event Number:</label>
-                <input placeholder="ex. 1" class="label p-4 rounded-lg text-black text-center" id="eventNum"></input>
-                <div id="error-message"></div>
-                <button class="buttons p-4 rounded-lg shadow hover:shadow-xl focus:outline-none transition-all duration-300 text-black text-center" id="delete-event">Delete</button>
+			<main class="flex-1 grid lg:grid-cols-3">
+				<button class="stud-event p-4 rounded-lg shadow hover:shadow-xl focus:outline-none transition-all duration-300 text-black text-center" onclick="window.location.href = 'attendance/create.html';">Add Attendance</button>
+				<button class="stud-event p-4 rounded-lg shadow hover:shadow-xl focus:outline-none transition-all duration-300 text-black text-center" onclick="window.location.href = 'attendance/query.html';">Query Attendance</button>
+				<button class="stud-event p-4 rounded-lg shadow hover:shadow-xl focus:outline-none transition-all duration-300 text-black text-center" onclick="window.location.href = 'attendance/delete.html';">Delete Attendance</button>
 			</main>
 			<footer class="bg-primary p-4 text-primary-foreground text-center">
 			  <p>&copy; 2024 OMAD Inc. All rights reserved.</p>

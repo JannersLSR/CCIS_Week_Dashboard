@@ -104,13 +104,21 @@
 			  <div class="bg-background text-primary-foreground min-h-screen flex flex-col">
 			<header class="bg-primary p-4 flex justify-between items-center">
 			  <h1 class="text-xl font-bold">CCIS Week Admin Dashboard</h1>
-			  <button class="bg-secondary text-secondary-foreground px-3 py-1 rounded-lg" onclick="window.location.href = '../events.html';">Back</button>
+			  <button class="bg-secondary text-secondary-foreground px-3 py-1 rounded-lg" onclick="window.location.href = '../attendance.html';">Back</button>
 			</header>
-			<main class="flex-1 flex flex-col items-center justify-center">
-                <label class="label p-4 rounded-lg text-black text-center">Event Number:</label>
-                <input placeholder="ex. 1" class="label p-4 rounded-lg text-black text-center" id="eventNum"></input>
-                <div id="error-message"></div>
-                <button class="buttons p-4 rounded-lg shadow hover:shadow-xl focus:outline-none transition-all duration-300 text-black text-center" id="delete-event">Delete</button>
+			<main class="flex-1 flex flex-col">
+				<div class="flex-1 p- lg:grid-cols-2 items-center text-center">
+					<label class="label rounded-lg text-black">Events Number:</label>
+                	<input class="label rounded-lg text-black text-center" id="eventNum" placeholder="ex. 1"></input>
+					<button class="label p-5 rounded-lg shadow hover:shadow-xl focus:outline-none transition-all duration-300 text-black text-center" id="query-attendance">Search</button>
+					<label class="label rounded-lg text-black text-center">Event Name:</label>
+                	<label class="label placeholder rounded-lg text-black text-center" id="q-ename"></label>
+					<div id="error-message"></div>
+				</div>
+                
+				<div class="label text-black grid lg:grid-cols-4 text-black items-center text-center" id="att-list"></div>
+                
+                
 			</main>
 			<footer class="bg-primary p-4 text-primary-foreground text-center">
 			  <p>&copy; 2024 OMAD Inc. All rights reserved.</p>

@@ -308,6 +308,54 @@ app.delete('/delete/events', async (req, res) => {
     }
 });
 
+// QUERY ATTENDANCE
+app.post('/query/attendance', async (req, res) => {
+    const { eventNum } = req.body;
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection({
+            user: 'system',
+            password: 'admin',
+            connectString: 'localhost/XE'
+        });
+
+        const existingResult = await connection.execute(
+            `SELECT COUNT(*) AS count FROM Events WHERE eventID = :eventNum`,
+            [eventNum]
+        );
+
+        if (existingResult.rows[0][0] === 0) {
+            res.status(400).json({ attendanceFound: false });
+        } else {
+            const result = await connection.execute(
+                `SELECT studID FROM Attendance WHERE eventID = :eventNum`,
+                [eventNum]
+            );
+
+            const eventResult = await connection.execute(
+                `SELECT eventName FROM Events WHERE eventID = :eventNum`,
+                [eventNum]
+            );
+
+            const studIDs = result.rows.map(row => row[0]);
+            const eventName = eventResult.rows[0][0];
+            res.status(200).json({ attendanceFound: true, eventName, studIDs });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ attendanceFound: false });
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
+});
+
 // USER LOGIN
 app.post('/query/users', async (req, res) => {
     const {username, password} = req.body;
