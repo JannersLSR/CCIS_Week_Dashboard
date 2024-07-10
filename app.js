@@ -1,3 +1,38 @@
+// CREATE STUDENT
+document.addEventListener('DOMContentLoaded', () => {
+    const createStudentButton = document.getElementById('create-student');
+    if (createStudentButton) {
+        createStudentButton.addEventListener('click', async function(event){
+            const studNum = document.getElementById('studNum').value;
+            const studFName = document.getElementById('studFName').value;
+            const studLName = document.getElementById('studLName').value;
+            const studHouse = document.getElementById('studHouse').value;
+
+            try {
+                const res = await fetch('http://localhost:3000/create/students', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ studNum, studFName, studLName, studHouse })
+                });
+
+                if (res.ok) {
+                    console.log('Student created successfully');
+                } else {
+                    //console.error('Failed to create student:', res.status);
+                    displayErrorMessage('Failed to create student or Student already exists.', 'error-message');
+                }
+            } catch (error) {
+                //console.error('Error creating student:', error);
+                displayErrorMessage('Error creating student. Please try again.', 'error-message');
+            }
+        });
+    } else {
+        console.error('Create student button not found.');
+    }
+});
+
 // QUERY STUDENT
 document.addEventListener('DOMContentLoaded', () => {
     const queryStudentButton = document.getElementById('query-student');
@@ -91,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log('Student deleted successfully');
                 } else {
                     console.error('Failed to delete student:', res.status);
-                    displayErrorMessage('Failed to delete student. Please try again.', 'error-message');
+                    displayErrorMessage('Failed to delete student/Student does not exist. Please try again.', 'error-message');
                 }
             } catch (error) {
                 console.error('Error deleting student:', error);

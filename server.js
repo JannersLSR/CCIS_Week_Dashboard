@@ -11,7 +11,40 @@ app.use(cors({
 }));
 
 // CREATE STUDENT
+app.post('/create/students', async (req, res) => {
+    const { studNum, studFName, studLName, studHouse } = req.body;
+    let connection;
+    try {
+        connection = await oracledb.getConnection({
+            user: 'system',
+            password: 'admin',
+            connectString: 'localhost/XE'
+        });
 
+        const existingResult = await connection.execute(`SELECT COUNT(*) AS count FROM Students WHERE studID = :studNum`, 
+            [studNum]);
+
+        if (existingResult.rows[0][0] > 0) {
+            res.status(400).send('Student ID already exists');
+        } else {
+            await connection.execute(`INSERT INTO Students (studID, studFName, studLName, studHouse) VALUES (:studNum, :studFName, :studLName, :studHouse)`, 
+                [ studNum, studFName, studLName, studHouse ]);
+            await connection.commit();
+            res.status(200).send('Student created successfully');
+        }
+    } catch (err) {
+        res.status(500).send('An error occurred. Please try again later.');
+        console.error(err);
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
+});
 
 // QUERY-UPDATE STUDENT
 app.post('/query/students', async (req, res) => {
