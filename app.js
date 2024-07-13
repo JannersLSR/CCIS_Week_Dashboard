@@ -284,9 +284,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // CREATE ATTENDANCE
 document.addEventListener('DOMContentLoaded', () => {
-    const createEventButton = document.getElementById('create-attendance');
-    if (createEventButton) {
-        createEventButton.addEventListener('click', async function(event){
+    const createAttendanceButton = document.getElementById('create-attendance');
+    if (createAttendanceButton) {
+        createAttendanceButton.addEventListener('click', async function(event){
             const eventNum = document.getElementById('eventNum').value;
             const studNum = document.getElementById('studNum').value;
 
@@ -367,7 +367,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// DELETE ATTENDANCE
+document.addEventListener('DOMContentLoaded', () => {
+    const deleteAttendanceButton = document.getElementById('delete-attendance');
+    if (deleteAttendanceButton) {
+        deleteAttendanceButton.addEventListener('click', async function(event){
+            const eventNumber = document.getElementById('eventNum').value;
+            const studNumber = document.getElementById('studNum').value
 
+            try {
+                const res = await fetch('http://localhost:3000/delete/attendance', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ eventNum: eventNumber, studNum: studNumber })
+                });
+
+                if (res.ok) {
+                    console.log('Attendance deleted successfully');
+                } else {
+                    console.error('Failed to delete attendance:', res.status);
+                    displayErrorMessage('Attendance does not exist.', 'error-message');
+                }
+            } catch (error) {
+                console.error('Error deleting attendance:', error);
+                displayErrorMessage('Error deleting attendance. Please try again.', 'error-message');
+            }
+        });
+    } else {
+        console.error('Delete attendance button not found.');
+    }
+});
 
 // LOGIN USER
 document.addEventListener('DOMContentLoaded', () => {

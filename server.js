@@ -392,6 +392,43 @@ app.post('/query/attendance', async (req, res) => {
     }
 });
 
+// DELETE ATTENDANCE
+app.delete('/delete/attendance', async (req, res) => {
+    const { eventNum, studNum } = req.body;
+    let connection;
+    try {
+        connection = await oracledb.getConnection({
+            user: 'system',
+            password: 'admin',
+            connectString: 'localhost/XE'
+        });
+
+        const result = await connection.execute(
+            `DELETE FROM Attendance WHERE eventID = :eventNum AND studID = :studNum`,
+            [eventNum, studNum],
+            {autoCommit: true}
+        );
+
+        if (result.rowsAffected && result.rowsAffected === 1) {
+            res.status(200).send('Attendance deleted successfully');
+        } else {
+            res.status(404).send('Attendance not found or delete failed');
+        }
+    } catch (err) {
+        res.status(500).send('An error occurred. Please try again later.');
+        console.error(err);
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
+});
+
+
 // USER LOGIN
 app.post('/query/users', async (req, res) => {
     const {username, password} = req.body;
