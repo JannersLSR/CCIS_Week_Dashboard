@@ -400,6 +400,124 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// CREATE PARTICIPANTS
+document.addEventListener('DOMContentLoaded', () => {
+    const createParticipantsButton = document.getElementById('create-participants');
+    if (createParticipantsButton) {
+        createParticipantsButton.addEventListener('click', async function(event){
+            const eventNum = document.getElementById('eventNum').value;
+            const studNum = document.getElementById('studNum').value;
+
+            try {
+                const res = await fetch('http://localhost:3000/create/participants', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ eventNum, studNum})
+                });
+
+                if (res.ok) {
+                    console.log('Participants created successfully');
+                } else {
+                    //console.error('Failed to create student:', res.status);
+                    displayErrorMessage('Participants already exists or Missing parameters.', 'error-message');
+                }
+            } catch (error) {
+                //console.error('Error creating student:', error);
+                displayErrorMessage('Error creating participants. Please try again.', 'error-message');
+            }
+        });
+    } else {
+        console.error('Create participants button not found.');
+    }
+});
+
+// QUERY PARTICIPANTS
+document.addEventListener('DOMContentLoaded', () => {
+    const queryParticipantsButton = document.getElementById('query-participants');
+    const eventNameDisplay = document.getElementById('q-ename');
+    const participantsList = document.getElementById('part-list');
+
+    if (queryParticipantsButton) {
+        queryParticipantsButton.addEventListener('click', async function(event){
+            const eventNumber = document.getElementById('eventNum').value;
+
+            try {
+                const res = await fetch('http://localhost:3000/query/participants', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ eventNum: eventNumber })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+
+                    if (data.participantsFound) {
+
+                        clearErrorMessage();
+
+                        eventNameDisplay.textContent = `${data.eventName}`;
+
+                        participantsList.innerHTML = '';
+
+                        data.studIDs.forEach(studID => {
+                            const listItem = document.createElement('li');
+                            listItem.textContent = `${studID}`;
+                            participantsList.appendChild(listItem);
+                        });
+                    } else {
+                        displayErrorMessage('Participants not found for Event Number.', 'error-message');
+                    }
+                } else {
+                    console.error('Failed to fetch event:', res.status);
+                    displayErrorMessage('Event Number not Found!', 'error-message');
+                }
+            } catch (error) {
+                console.error('Error fetching event:', error);
+                displayErrorMessage('Error fetching event. Please try again.', 'error-message' );
+            }
+        });
+    } else {
+        console.error('Currently not in correct page');
+    }
+});
+
+// DELETE PARTICIPANT
+document.addEventListener('DOMContentLoaded', () => {
+    const deleteParticipantsButton = document.getElementById('delete-participants');
+    if (deleteParticipantsButton) {
+        deleteParticipantsButton.addEventListener('click', async function(event){
+            const eventNumber = document.getElementById('eventNum').value;
+            const studNumber = document.getElementById('studNum').value
+
+            try {
+                const res = await fetch('http://localhost:3000/delete/participants', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ eventNum: eventNumber, studNum: studNumber })
+                });
+
+                if (res.ok) {
+                    console.log('Participants deleted successfully');
+                } else {
+                    console.error('Failed to delete participants:', res.status);
+                    displayErrorMessage('Participants does not exist.', 'error-message');
+                }
+            } catch (error) {
+                console.error('Error deleting participants:', error);
+                displayErrorMessage('Error deleting participants. Please try again.', 'error-message');
+            }
+        });
+    } else {
+        console.error('Delete participants button not found.');
+    }
+});
+
 // LOGIN USER
 document.addEventListener('DOMContentLoaded', () => {
     const loginButton = document.getElementById('login-dash');

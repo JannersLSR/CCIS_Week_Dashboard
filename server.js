@@ -428,6 +428,126 @@ app.delete('/delete/attendance', async (req, res) => {
     }
 });
 
+// CREATE PARTICIPANTS
+app.post('/create/participants', async (req, res) => {
+    const { eventNum, studNum } = req.body;
+    let connection;
+    try {
+        connection = await oracledb.getConnection({
+            user: 'system',
+            password: 'admin',
+            connectString: 'localhost/XE'
+        });
+
+        const existingResult = await connection.execute(`SELECT COUNT(*) AS count FROM Participants WHERE eventID = :eventNum AND studID = :studNum`, 
+            [eventNum, studNum]);
+
+        if (existingResult.rows[0][0] > 0) {
+            res.status(400).send('Participants already exists');
+        } else {
+            await connection.execute(`INSERT INTO Participants (eventID, studID) VALUES (:eventNum, :studNum)`, 
+                [ eventNum, studNum ]);
+            await connection.commit();
+            res.status(200).send('Participants created successfully');
+        }
+    } catch (err) {
+        res.status(500).send('An error occurred. Please try again later.');
+        console.error(err);
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
+});
+
+// QUERY PARTICIPANTS
+app.post('/query/participants', async (req, res) => {
+    const { eventNum } = req.body;
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection({
+            user: 'system',
+            password: 'admin',
+            connectString: 'localhost/XE'
+        });
+
+        const existingResult = await connection.execute(
+            `SELECT COUNT(*) AS count FROM Events WHERE eventID = :eventNum`,
+            [eventNum]
+        );
+
+        if (existingResult.rows[0][0] === 0) {
+            res.status(400).json({ attendanceFound: false });
+        } else {
+            const result = await connection.execute(
+                `SELECT studID FROM Participants WHERE eventID = :eventNum`,
+                [eventNum]
+            );
+
+            const eventResult = await connection.execute(
+                `SELECT eventName FROM Events WHERE eventID = :eventNum`,
+                [eventNum]
+            );
+
+            const studIDs = result.rows.map(row => row[0]);
+            const eventName = eventResult.rows[0][0];
+            res.status(200).json({ participantsFound: true, eventName, studIDs });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ participantsFoundFound: false });
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
+});
+
+// DELETE PARTICIPANTS
+app.delete('/delete/participants', async (req, res) => {
+    const { eventNum, studNum } = req.body;
+    let connection;
+    try {
+        connection = await oracledb.getConnection({
+            user: 'system',
+            password: 'admin',
+            connectString: 'localhost/XE'
+        });
+
+        const result = await connection.execute(
+            `DELETE FROM Participants WHERE eventID = :eventNum AND studID = :studNum`,
+            [eventNum, studNum],
+            {autoCommit: true}
+        );
+
+        if (result.rowsAffected && result.rowsAffected === 1) {
+            res.status(200).send('Participants deleted successfully');
+        } else {
+            res.status(404).send('Participants not found or delete failed');
+        }
+    } catch (err) {
+        res.status(500).send('An error occurred. Please try again later.');
+        console.error(err);
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
+});
+
 
 // USER LOGIN
 app.post('/query/users', async (req, res) => {
