@@ -282,6 +282,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// CREATE ATTENDANCE
+document.addEventListener('DOMContentLoaded', () => {
+    const createEventButton = document.getElementById('create-attendance');
+    if (createEventButton) {
+        createEventButton.addEventListener('click', async function(event){
+            const eventNum = document.getElementById('eventNum').value;
+            const studNum = document.getElementById('studNum').value;
+
+            try {
+                const res = await fetch('http://localhost:3000/create/attendance', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ eventNum, studNum})
+                });
+
+                if (res.ok) {
+                    console.log('Attendance created successfully');
+                } else {
+                    //console.error('Failed to create student:', res.status);
+                    displayErrorMessage('Attendance already exists or Missing parameters.', 'error-message');
+                }
+            } catch (error) {
+                //console.error('Error creating student:', error);
+                displayErrorMessage('Error creating attendance. Please try again.', 'error-message');
+            }
+        });
+    } else {
+        console.error('Create attendance button not found.');
+    }
+});
+
 // QUERY ATTEDANCE
 document.addEventListener('DOMContentLoaded', () => {
     const queryAttendanceButton = document.getElementById('query-attendance');

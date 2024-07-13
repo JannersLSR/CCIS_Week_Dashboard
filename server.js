@@ -308,6 +308,42 @@ app.delete('/delete/events', async (req, res) => {
     }
 });
 
+// CREATE ATTENDANCE
+app.post('/create/attendance', async (req, res) => {
+    const { eventNum, studNum } = req.body;
+    let connection;
+    try {
+        connection = await oracledb.getConnection({
+            user: 'system',
+            password: 'admin',
+            connectString: 'localhost/XE'
+        });
+
+        const existingResult = await connection.execute(`SELECT COUNT(*) AS count FROM Attendance WHERE eventID = :eventNum AND studID = :studNum`, 
+            [eventNum, studNum]);
+
+        if (existingResult.rows[0][0] > 0) {
+            res.status(400).send('Attendance already exists');
+        } else {
+            await connection.execute(`INSERT INTO Attendance (eventID, studID) VALUES (:eventNum, :studNum)`, 
+                [ eventNum, studNum ]);
+            await connection.commit();
+            res.status(200).send('Attendance created successfully');
+        }
+    } catch (err) {
+        res.status(500).send('An error occurred. Please try again later.');
+        console.error(err);
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
+});
+
 // QUERY ATTENDANCE
 app.post('/query/attendance', async (req, res) => {
     const { eventNum } = req.body;
